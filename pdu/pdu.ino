@@ -13,8 +13,8 @@
 
 #define CE_PIN 9    //
 #define CSN_PIN 10  //
-const uint64_t readingPipe = 0x787878787878;
-const uint64_t writingPipe = 0xE8E8F0F0E2LL;
+const uint64_t readingPipe = 0xE8E8F0F0AALL;
+const uint64_t writingPipe = 0xE8E8F0F0ABLL;
 //массив для передачи
 //  uint16_t dataToBeTransmitted[16] = {0, 0, 0, 0, 4};
   int16_t dataToBeTransmitted[16] = {0, 0, 0, 0, 4};
