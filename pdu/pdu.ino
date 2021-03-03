@@ -27,6 +27,8 @@ int joy_c1x=0;
 int joy_c1y=0;
 int joy_c2x=0;
 int joy_c2y=0;
+//
+uint32_t message;  // Эта переменная для сбора обратного сообщения от приемника;
 
 RF24 radio(CE_PIN, CSN_PIN);
 //
@@ -56,6 +58,7 @@ void setup() {
     radio.setDataRate(RF24_250KBPS);        // Установка минимальной скорости;
     radio.setPALevel(RF24_PA_MAX);          // Установка максимальной мощности;
     radio.setAutoAck(false);                    // Установка режима подтверждения приема;
+    radio.enableAckPayload(); 
     radio.setAddressWidth(5);     //установить длину идентификатора трубы
     radio.openWritingPipe(writingPipe);     // Активация данных для отправки
     radio.openReadingPipe(1,readingPipe);   // Активация данных для чтения
@@ -76,5 +79,9 @@ void loop() {
 //  radio.writeFast(&dataToBeTransmitted, 32);
   radio.write(&dataToBeTransmitted, 32);
 //  radio.startListening();                 // Слушаем эфир.
+if ( radio.isAckPayloadAvailable() ) {  // Ждем получения...
+      radio.read(&message,sizeof(message));  //... и имеем переменную message с числом 111 от приемника.
+                                      }
+
   delay(10);
 }
