@@ -57,6 +57,8 @@ void serial_out()
   Serial.print(dataToBeTransmitted[2]);
   Serial.print("  ");
   Serial.print(dataToBeTransmitted[3]);
+  Serial.print("  ");
+  Serial.print(dataToBeTransmitted[4]);
   Serial.print("\n");
   return;  
 }
@@ -70,7 +72,7 @@ void setup() {
   pinMode(j1_y,INPUT);
   pinMode(j2_x,INPUT);                    //левый джойстик
   pinMode(j2_y,INPUT);
-//  pinMode(LED,OUTPUT);                    //светодиод возле джойстиков
+  pinMode(LED,OUTPUT);                    //светодиод возле джойстиков
 //
 #ifdef debug_1
    Serial.begin(1000000); /* установка соединения */
@@ -81,7 +83,7 @@ void setup() {
     radio.setChannel(5);                    // Установка канала вещания;
     radio.setRetries(15,15);                // Установка интервала и количества попыток "дозвона" до приемника;
     radio.setDataRate(RF24_250KBPS);        // Установка минимальной скорости;
-    radio.setPALevel(RF24_PA_MAX);          // Установка максимальной мощности;
+    radio.setPALevel(RF24_PA_MIN);          // Установка максимальной мощности;
     radio.setAutoAck(true);                    // Установка режима подтверждения приема;
     radio.enableAckPayload(); 
     radio.setAddressWidth(5);     //установить длину идентификатора трубы
@@ -108,11 +110,12 @@ void loop() {
 //  radio.writeFast(&dataToBeTransmitted, 32);
   radio.write(&dataToBeTransmitted, 16);
 //  radio.startListening();                 // Слушаем эфир.
+      message=0;
       if ( radio.isAckPayloadAvailable() ) {  // Ждем получения...
         radio.read(&message,sizeof(message));  //... и имеем переменную message с числом 111 от приемника.
                                            }
                 dataToBeTransmitted[4]=message;
-/*      if(message != 111)
+      if(message == 111)
       {
         digitalWrite (LED,HIGH);
       }
@@ -120,8 +123,8 @@ void loop() {
       {
          digitalWrite (LED,LOW);
       }
-    */
-  delay (10);
+
+  delay (5);
     }
 
   
