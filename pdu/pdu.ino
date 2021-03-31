@@ -12,6 +12,11 @@
 #define sw1   8     //кнопка правого джойстика
 #define sw2   7     //кнопка левого джойстика
 #define LED   6     //светодиод возле джойстиков
+//шины клавиш
+//шины для выхода опросного сигнала
+//A4-A7 18-21
+//шины для приема сигнала от клавиш
+//D2-D5
 
 #define CE_PIN 9    //
 #define CSN_PIN 10  //
@@ -84,44 +89,48 @@ void setup() {
     radio.setRetries(15,15);                // Установка интервала и количества попыток "дозвона" до приемника;
     radio.setDataRate(RF24_250KBPS);        // Установка минимальной скорости;
     radio.setPALevel(RF24_PA_MIN);          // Установка максимальной мощности;
-    radio.setAutoAck(true);                    // Установка режима подтверждения приема;
+    radio.setAutoAck(true);                 // Установка режима подтверждения приема;
     radio.enableAckPayload(); 
     radio.setAddressWidth(5);     //установить длину идентификатора трубы
     radio.openWritingPipe(writingPipe);     // Активация данных для отправки
     radio.openReadingPipe(1,readingPipe);   // Активация данных для чтения
-//    radio.startListening();                 // Слушаем эфир.
-//    radio.stopListening();                 // Слушаем эфир.
-//калибровка джойстов
+//******************************************************************************************/
+//
+//калибровка джойстиков по центру
     joy();
     for(int i=0;i<4;i++)
     {
       joy_c[i]=511.0/dataToBeTransmitted[i];
     }
-   
+//
+//
 }
+//
+//
 void loop() {
-  // put your main code here, to run repeatedly:
-//  radio.stopListening();                 // Слушаем эфир.
-  joy();
+  joy();                                    //опрос джойстиков
   delay(5);
+//
+//опрос кнопок
+
+//
+//
 #ifdef debug_1
   serial_out();
 #endif
-//  radio.writeFast(&dataToBeTransmitted, 32);
   radio.write(&dataToBeTransmitted, 16);
-//  radio.startListening();                 // Слушаем эфир.
       message=0;
-      if ( radio.isAckPayloadAvailable() ) {  // Ждем получения...
+      if ( radio.isAckPayloadAvailable() ) {   // Ждем получения...
         radio.read(&message,sizeof(message));  //... и имеем переменную message с числом 111 от приемника.
                                            }
-                dataToBeTransmitted[4]=message;
+//                dataToBeTransmitted[4]=message;
       if(message == 111)
       {
         digitalWrite (LED,HIGH);
       }
       else
       {
-         digitalWrite (LED,LOW);
+        digitalWrite (LED,LOW);
       }
 
   delay (5);
